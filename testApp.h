@@ -59,20 +59,27 @@ public:
 	ofxImageGenerator	rgb;
 	ofxUserGenerator	user;
 	
-	int handHistoryDepth;
-	vector<ofPoint> leftHandHistory;
-	vector<ofPoint> theNeckHistory;	
+    int handHistoryDepth;
+    vector<ofPoint> leftHandHistory;
+    vector<ofPoint> rightHandHistory;
+    vector<ofPoint> theHeadHistory;
 	
-	ofPoint leftHand;
-	ofPoint rightHand;
-	ofPoint theNeck;
+    ofPoint leftHand;
+    ofPoint rightHand;
+    ofPoint theHead;
+    ofPoint theThroat;
+    
+    int playDelay;
+    int lastPlay;
 	
-	int playDelay;
-	int lastPlay;
+    float leftHandDist, rightHandDist, headDist, theNeck;
 	
+    int miniWidth;
+    int miniHeight;
 	
-	float velocity;
-
+    boolean_t jump;
+    boolean_t debug;
+    
 };
 
 #endif

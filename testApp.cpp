@@ -96,6 +96,10 @@ void testApp::setup(){
 	
 	
 	//kinect/fred setup
+    
+    miniWidth = 640;
+	miniHeight = 480;
+	
 	context.setup();
 	context.setupUsingXMLFile();
 	depth.setup(&context);
@@ -104,12 +108,12 @@ void testApp::setup(){
 	
 	depth.toggleRegisterViewport(&rgb);
 	context.toggleMirror();	
-	
+    
 	handHistoryDepth = 10; // store the last 10 hand positions, newest first
 	playDelay = 10; // frames between cues
-	lastPlay = 0;	
-	
-	
+	lastPlay = 0;
+	jump = false;
+    debug = false;
 	
 	
 } //end setup
@@ -169,17 +173,67 @@ void testApp::update(){
 	cout << "youPosX: " << youPos.x << " youPosY: " << youPos.y << " youPosZ: " << youPos.z <<endl;
 	
 	
-	/*// Kinect
-	
+	// Kinect
+    context.update();
+	user.update();
+    
+	// find the hands
 	for (int i = 0; i < user.getTrackedUsers().size(); i++) {
 		ofxTrackedUser* tracked = user.getTrackedUser(i);
 		if (tracked != NULL && tracked->left_lower_arm.found && tracked->right_lower_arm.found && tracked->neck.found) {
 			leftHand = tracked->left_lower_arm.end;
 			rightHand = tracked->right_lower_arm.end;
-			theNeck = tracked->neck.begin;
+			theHead = tracked->neck.begin;
+			theThroat = tracked->neck.end;
 			break;
 		}
-	}*/
+	}
+	
+	// add hand positions to history
+	if (leftHandHistory.size() <= handHistoryDepth) {
+		leftHandHistory.insert(leftHandHistory.begin(), leftHand);
+	}
+	
+	if (rightHandHistory.size() <= handHistoryDepth) {
+		rightHandHistory.insert(rightHandHistory.begin(), rightHand);
+	}
+	
+	if (theHeadHistory.size() <= handHistoryDepth) {
+		theHeadHistory.insert(theHeadHistory.begin(), theHead);
+	}
+	
+	// remove hand positions from history
+	if (leftHandHistory.size() > handHistoryDepth) {
+		leftHandHistory.pop_back();
+	}
+	
+	if (rightHandHistory.size() > handHistoryDepth) {
+		rightHandHistory.pop_back();
+	}
+	
+	if (theHeadHistory.size() > handHistoryDepth) {
+		theHeadHistory.pop_back();
+	}
+	
+	
+	leftHandDist = leftHand.y - leftHandHistory[1].y;
+	rightHandDist = rightHand.y - rightHandHistory[1].y;
+	headDist = theHead.y - theHeadHistory[1].y;
+	theNeck = theThroat.y - theHead.y;
+	//cout << "theNeck = " << theNeck << endl;
+	//cout << "headDist = " << headDist << endl;
+	if (headDist > theNeck/10) {
+		cout << "JUMP!" << endl;
+	}
+	
+    
+	if ((leftHand.x > miniWidth*2/3 && leftHand.x < miniWidth) && (rightHand.x > miniWidth*2/3 && rightHand.x < miniWidth) && (theHead.x > miniWidth*2/3 && theHead.x < miniWidth)) {
+		cout << "move right" << endl;
+	}
+	if ((leftHand.x > 0 && leftHand.x < miniWidth/3) && (rightHand.x > 0 && rightHand.x < miniWidth/3) && (theHead.x > 0 && theHead.x < miniWidth/3)) {
+		cout << "move left" << endl;
+	}
+
 	
 
 }
@@ -187,43 +241,68 @@ void testApp::update(){
 //--------------------------------------------------------------
 void testApp::draw(){
 
-	ofSetColor(0, 0, 0);
-	ofDrawBitmapString("keypressed: " + info, 20, 30);
-    ofDrawBitmapString("category: " + category, 20, 50);
-    ofDrawBitmapString("year: " + ofToString(year), 20, 70);
-    ofDrawBitmapString("height: " + ofToString(height), 20, 90);
-
+    // kinect draw
+    if (debug == true) {
+        ofSetLineWidth(1);
+        ofSetColor(255, 255, 255);
+        
+        rgb.draw(0, 0, miniWidth, miniHeight);
+        
+        
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_DST_COLOR, GL_ZERO);
+        user.drawUserMasks(0, 0);
+        glDisable(GL_BLEND);
+        user.draw();
+        
+        ofSetColor(255, 0, 0, 255);
+        ofCircle(leftHand.x, leftHand.y, 10);
+        ofCircle(rightHand.x, rightHand.y, 10);
+        ofCircle(theHead.x, theHead.y, 10);
+        
+        ofSetColor(0, leftHandDist * 4, rightHandDist * 4);
+    }
     
-	camera.place();//this MUST be inside the draw function, and actually places the camera in position
-
-	ofxLightsOn(); //turn lights on
-
-	//draw the ground
-	ofSetColor(50, 50, 50, 100);
-	ofxQuad(g1, g2, g3, g4);
+    
+    else {
+        ofSetColor(0, 0, 0);
+        ofDrawBitmapString("keypressed: " + info, 20, 30);
+        ofDrawBitmapString("category: " + category, 20, 50);
+        ofDrawBitmapString("year: " + ofToString(year), 20, 70);
+        ofDrawBitmapString("height: " + ofToString(height), 20, 90);
+        
+        
+        camera.place();//this MUST be inside the draw function, and actually places the camera in position
+        
+        ofxLightsOn(); //turn lights on
+        
+        //draw the ground
+        ofSetColor(50, 50, 50, 100);
+        ofxQuad(g1, g2, g3, g4);
+        
+        //ofSetColor(255, 255, 255);
+        
+        for (int i=0; i<18; i++)
+        {
+            for (int j=0; j<27; j++)
+            {
+                if (i==boxIndexI && j==boxIndexJ)
+                    myBoxes[i][j].draw(240);
+                else
+                    myBoxes[i][j].draw();
+            }
+        }
+        
+        ofSetColor(0, 0, 0);
+        
+        //you
+        ofxSphere(youPos.x, youPos.y, youPos.z, 10);
+        //we need to do headtracking and moving the camera  or something to show 3dness
+        
+        ofxLightsOff(); //turn lights off to draw text
 	
-	//ofSetColor(255, 255, 255);
-	
-	for (int i=0; i<18; i++)
-	{
-		for (int j=0; j<27; j++)
-		{
-			if (i==boxIndexI && j==boxIndexJ)
-				myBoxes[i][j].draw(240);
-			else
-				myBoxes[i][j].draw();
-		}
-	}
-
-	ofSetColor(0, 0, 0);
-
-	//you
-	ofxSphere(youPos.x, youPos.y, youPos.z, 10);
-	//we need to do headtracking and moving the camera  or something to show 3dness
-	
-	ofxLightsOff(); //turn lights off to draw text
-	
-
+    }
+    
 
 
 }
@@ -250,7 +329,9 @@ void testApp::keyPressed  (int key){
     
 	if (key==99) //c
 		cheatmode*=-1;
-
+    
+    if (key==101) // toggle debug (e)
+        debug = !debug;
 
 }
 
