@@ -38,7 +38,8 @@ public:
 	budgetBox myBoxes[18][27];
 	int boxIndexI, boxIndexJ; //what box are we on?
     string categories[18];
-
+    budgetBox current;
+    
 	float groundSize;
 	ofxVec3f g1, g2, g3, g4;
 	string info;
