@@ -67,10 +67,10 @@ void testApp::setup(){
 	{
 		for (int j=0; j< 27; j++)
 		{
-			//float currHeight=ofRandom(10, 1000);
-            height = dollars[j * 18 + i] / 1000000; //in hundreds of millions
+			height = (int) ofRandom(10, 1000);
+            // height = dollars[j * 18 + i] / 1000000; //in hundreds of millions
 			myBoxes[i][j].height = height;
-			myBoxes[i][j].location= ofxVec3f(i*boxSpacingX, height/2, boxSpacingZ*j);
+			myBoxes[i][j].location= ofxVec3f(i*boxSpacingX, -height/2, boxSpacingZ*j);
 			myBoxes[i][j].category = categories[i];
             myBoxes[i][j].year = j + 1984;
             ofColor c;
