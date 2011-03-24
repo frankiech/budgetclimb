@@ -79,6 +79,8 @@ public:
 	
     boolean_t jump;
     boolean_t debug;
+    boolean_t pressed;
+    boolean_t released;
     
 };
 

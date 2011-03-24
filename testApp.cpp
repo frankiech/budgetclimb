@@ -7,7 +7,7 @@
 void testApp::setup(){
 	ofBackground(250,250,250);
 	ofSetVerticalSync(true);
-	glEnable(GL_DEPTH_TEST); //lights look weird if depth test is not enabled
+	//glEnable(GL_DEPTH_TEST); //lights look weird if depth test is not enabled
 	//but  this also prevents nice transperency 
 	centerX = ofGetWidth()/2;
 	centerY = ofGetHeight()/2;
@@ -110,10 +110,13 @@ void testApp::setup(){
 	context.toggleMirror();	
     
 	handHistoryDepth = 10; // store the last 10 hand positions, newest first
-	playDelay = 10; // frames between cues
+	playDelay = 60; // frames between cues
 	lastPlay = 0;
+    
 	jump = false;
     debug = false;
+    pressed = false;
+    released = true;
 	
 	
 } //end setup
@@ -147,7 +150,7 @@ void testApp::update(){
 	// for following the user
 	else
 	{
-		camera.lerpPosition(current.location.x, ofGetHeight()-youPos.y, current.location.z-150, 0.05); //interpolate the camera into a closer position
+		camera.lerpPosition(current.location.x, ofGetHeight()-youPos.y+1, current.location.z-150, 0.05); //interpolate the camera into a closer position
 		camera.lerpEye(current.location.x, ofGetHeight()+current.height/10-youPos.y, current.location.z, 0.05);
 		
 		//win condition for getting on top of a box
@@ -168,9 +171,9 @@ void testApp::update(){
 		}
 	} //end this isn't cheatmode
 	
-	cout << "box currentX: " << current.location.x << " currentY: " << current.location.y << " currentZ: " << current.location.z <<endl;
+	/*cout << "box currentX: " << current.location.x << " currentY: " << current.location.y << " currentZ: " << current.location.z <<endl;
 	cout << "boxIndexI " << boxIndexI << " boxIndexJ "<<boxIndexJ<<endl;
-	cout << "youPosX: " << youPos.x << " youPosY: " << youPos.y << " youPosZ: " << youPos.z <<endl;
+	cout << "youPosX: " << youPos.x << " youPosY: " << youPos.y << " youPosZ: " << youPos.z <<endl;*/
 	
 	
 	// Kinect
@@ -218,21 +221,55 @@ void testApp::update(){
 	
 	leftHandDist = leftHand.y - leftHandHistory[1].y;
 	rightHandDist = rightHand.y - rightHandHistory[1].y;
-	headDist = theHead.y - theHeadHistory[1].y;
+    // cout << "leftHandDist = " << leftHandDist << ", rightHandDist = " << rightHandDist  << endl;
+    
+    
+    // climbing interaction
+    if (leftHandDist > 0)
+        youPos.y = youPos.y - leftHandDist/8;
+    if (rightHandDist > 0)
+        youPos.y = youPos.y - rightHandDist/8;   
+    
+	
+    headDist = theHead.y - theHeadHistory[1].y;
 	theNeck = theThroat.y - theHead.y;
 	//cout << "theNeck = " << theNeck << endl;
 	//cout << "headDist = " << headDist << endl;
-	if (headDist > theNeck/10) {
-		cout << "JUMP!" << endl;
-	}
-	
     
-	if ((leftHand.x > miniWidth*2/3 && leftHand.x < miniWidth) && (rightHand.x > miniWidth*2/3 && rightHand.x < miniWidth) && (theHead.x > miniWidth*2/3 && theHead.x < miniWidth)) {
-		cout << "move right" << endl;
+    
+	if (headDist > theNeck/10) {
+        if ((ofGetFrameNum() - lastPlay) > playDelay) {
+            lastPlay = ofGetFrameNum();
+            // cout << "JUMP!" << endl;
+            boxIndexJ++; // move forward
+            youPos.y = 0; // set to zero
+        }
 	}
+    
+	
+    cout << "pressed = " << pressed << ", released = " << released << endl;    
 	if ((leftHand.x > 0 && leftHand.x < miniWidth/3) && (rightHand.x > 0 && rightHand.x < miniWidth/3) && (theHead.x > 0 && theHead.x < miniWidth/3)) {
-		cout << "move left" << endl;
+        cout << "move right attempt" << endl;
+        if (released == true && pressed == false) {
+            cout << "MOVE RIGHT" << endl;
+            if (boxIndexI < 27) {boxIndexI++;} else {boxIndexI = 26;}
+            pressed = true;
+            released = false;
+        }
 	}
+	else if ((leftHand.x > miniWidth*2/3 && leftHand.x < miniWidth) && (rightHand.x > miniWidth*2/3 && rightHand.x < miniWidth) && (theHead.x > miniWidth*2/3 && theHead.x < miniWidth)) {
+        cout << "move left attempt" << endl;
+        if (released == true && pressed == false) {
+            cout << "MOVE LEFT" << endl;
+            if (boxIndexI > 0) {boxIndexI--;} else {boxIndexI = 0;}
+            pressed = true;
+            released = false;
+        }
+	}
+    else { 
+        released = true;
+        pressed = false;
+    }
 
 	
 
@@ -246,12 +283,13 @@ void testApp::draw(){
         ofSetLineWidth(1);
         ofSetColor(255, 255, 255);
         
-        rgb.draw(0, 0, miniWidth, miniHeight);
+        // rgb.draw(0, 0, miniWidth, miniHeight);
         
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_DST_COLOR, GL_ZERO);
-        user.drawUserMasks(0, 0);
+        
+        // user.drawUserMasks(0, 0);
         glDisable(GL_BLEND);
         user.draw();
         
@@ -261,6 +299,7 @@ void testApp::draw(){
         ofCircle(theHead.x, theHead.y, 10);
         
         ofSetColor(0, leftHandDist * 4, rightHandDist * 4);
+        
     }
     
     
@@ -295,11 +334,25 @@ void testApp::draw(){
         
         ofSetColor(0, 0, 0);
         
-        //you
-        ofxSphere(youPos.x, youPos.y, youPos.z, 10);
-        //we need to do headtracking and moving the camera  or something to show 3dness
         
         ofxLightsOff(); //turn lights off to draw text
+        
+        
+        // ofxSphere(youPos.x, youPos.y, youPos.z, 10);
+        
+        // draw skeleton
+        ofPushMatrix();
+            ofTranslate(youPos.x-25 , youPos.y, youPos.z+20);
+            ofScale(.08, .08, .08);
+            //ofxSphere(0,0,0, 5);
+            ofSetColor(0, 0, 255);
+            user.draw();
+            //ofxSphere(leftHand.x/10, leftHand.y/10, 0,30);
+            //ofxSphere(rightHand.x/10, rightHand.y/10, 0,30);
+            //ofxSphere(theHead.x/10, theHead.y/10, 0, 30);
+        ofPopMatrix();
+        
+
 	
     }
     
@@ -313,19 +366,22 @@ void testApp::keyPressed  (int key){
 	info = ofToString(key);
 	if (key==100 && boxIndexI < 17) // right (d)
 		boxIndexI++;  
+    
 	if (key==119 && boxIndexJ < 26) // forward (w) 
 		boxIndexJ++;
     else
         boxIndexJ = 0;
-	if (key==115 && boxIndexJ > 0) // backward (s)
+	
+    if (key==115 && boxIndexJ > 0) // backward (s)
 		boxIndexJ--; 
+    
 	if (key==97 && boxIndexI > 0) // left (a)
 		boxIndexI--;
     
 	if (key==357) //climbing up (up arrow)
-		youPos.y-=2;
+		youPos.y-=10;
 	if (key==359) //climbing down (down arrow)
-		youPos.y+=2;
+		youPos.y+=10;
     
 	if (key==99) //c
 		cheatmode*=-1;
