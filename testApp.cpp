@@ -7,7 +7,7 @@
 void testApp::setup(){
 	ofBackground(250,250,250);
 	ofSetVerticalSync(true);
-	//glEnable(GL_DEPTH_TEST); //lights look weird if depth test is not enabled
+	// glEnable(GL_DEPTH_TEST); //lights look weird if depth test is not enabled
 	//but  this also prevents nice transperency 
 	centerX = ofGetWidth()/2;
 	centerY = ofGetHeight()/2;
