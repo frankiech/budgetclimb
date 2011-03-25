@@ -1,0 +1,14 @@
+
+Project by Zach Schwartz, Fred Truman, and Frankie Cheung.
+
+Data from whatwepayfor.com
+
+Addons required:
+-OfXOpenNI
+-ofx3DUtils
+-ofxDirList
+-ofxOpenCV
+-ofxVectorMath
+
+Don't forget to put the openNI bin files in your bin/data folder for this project.
+
