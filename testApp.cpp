@@ -1,6 +1,4 @@
 #include "testApp.h"
-#include "ofxOpenNI.h"
-
 
 
 //--------------------------------------------------------------
@@ -94,9 +92,8 @@ void testApp::setup(){
 	
 	youPos.y= 0;
 	
-	
-	//kinect/fred setup
-    
+// Kinect setup	
+#ifdef KINECT    
     miniWidth = 640;
 	miniHeight = 480;
 	
@@ -117,7 +114,7 @@ void testApp::setup(){
     debug = false;
     pressed = false;
     released = true;
-	
+#endif	
 	
 } //end setup
 
@@ -176,7 +173,8 @@ void testApp::update(){
 	cout << "youPosX: " << youPos.x << " youPosY: " << youPos.y << " youPosZ: " << youPos.z <<endl;*/
 	
 	
-	// Kinect
+// Kinect update
+#ifdef KINECT
     context.update();
 	user.update();
     
@@ -238,7 +236,7 @@ void testApp::update(){
     
     
 	if (headDist > theNeck/10) {
-        if ((ofGetFrameNum() - lastPlay) > playDelay) {
+        if ((ofGetFrameNum() - lastPlay) > playDelay && ontop == 1) {
             lastPlay = ofGetFrameNum();
             // cout << "JUMP!" << endl;
             boxIndexJ++; // move forward
@@ -247,9 +245,9 @@ void testApp::update(){
 	}
     
 	
-    cout << "pressed = " << pressed << ", released = " << released << endl;    
+    // cout << "pressed = " << pressed << ", released = " << released << endl;    
 	if ((leftHand.x > 0 && leftHand.x < miniWidth/3) && (rightHand.x > 0 && rightHand.x < miniWidth/3) && (theHead.x > 0 && theHead.x < miniWidth/3)) {
-        cout << "move right attempt" << endl;
+        // cout << "move right attempt" << endl;
         if (released == true && pressed == false) {
             cout << "MOVE RIGHT" << endl;
             if (boxIndexI < 27) {boxIndexI++;} else {boxIndexI = 26;}
@@ -258,7 +256,7 @@ void testApp::update(){
         }
 	}
 	else if ((leftHand.x > miniWidth*2/3 && leftHand.x < miniWidth) && (rightHand.x > miniWidth*2/3 && rightHand.x < miniWidth) && (theHead.x > miniWidth*2/3 && theHead.x < miniWidth)) {
-        cout << "move left attempt" << endl;
+        // cout << "move left attempt" << endl;
         if (released == true && pressed == false) {
             cout << "MOVE LEFT" << endl;
             if (boxIndexI > 0) {boxIndexI--;} else {boxIndexI = 0;}
@@ -271,15 +269,17 @@ void testApp::update(){
         pressed = false;
     }
 
-	
+#endif	
 
 }
 
 //--------------------------------------------------------------
 void testApp::draw(){
 
+
     // kinect draw
     if (debug == true) {
+#ifdef KINECT
         ofSetLineWidth(1);
         ofSetColor(255, 255, 255);
         
@@ -300,8 +300,8 @@ void testApp::draw(){
         
         ofSetColor(0, leftHandDist * 4, rightHandDist * 4);
         
-    }
-    
+#endif  
+    }  
     
     else {
         ofSetColor(0, 0, 0);
@@ -321,6 +321,7 @@ void testApp::draw(){
         
         //ofSetColor(255, 255, 255);
         
+        // draw budgetBoxes
         for (int i=0; i<18; i++)
         {
             for (int j=0; j<27; j++)
@@ -334,25 +335,24 @@ void testApp::draw(){
         
         ofSetColor(0, 0, 0);
         
-        
         ofxLightsOff(); //turn lights off to draw text
         
         
-        // ofxSphere(youPos.x, youPos.y, youPos.z, 10);
-        
+#ifdef KINECT
         // draw skeleton
         ofPushMatrix();
             ofTranslate(youPos.x-25 , youPos.y, youPos.z+20);
             ofScale(.08, .08, .08);
-            //ofxSphere(0,0,0, 5);
             ofSetColor(0, 0, 255);
             user.draw();
             //ofxSphere(leftHand.x/10, leftHand.y/10, 0,30);
             //ofxSphere(rightHand.x/10, rightHand.y/10, 0,30);
             //ofxSphere(theHead.x/10, theHead.y/10, 0, 30);
         ofPopMatrix();
-        
-
+#else        
+        // draw sphere
+        ofxSphere(youPos.x, youPos.y, youPos.z, 10);
+#endif
 	
     }
     
@@ -388,7 +388,11 @@ void testApp::keyPressed  (int key){
     
     if (key==101) // toggle debug (e)
         debug = !debug;
-
+    
+    if (key==106 && ontop == 1) {// toggle jump (j)
+        boxIndexJ++; // move forward
+        youPos.y = 0; // set to zero
+    }
 }
 
 //--------------------------------------------------------------

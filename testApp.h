@@ -1,13 +1,15 @@
 #ifndef _TEST_APP
 #define _TEST_APP
 
-
 #include "ofMain.h"
 #include "ofx3DUtils.h"
 #include "budgetBox.h"
+
+// #define KINECT
+
+#ifdef KINECT
 #include "ofxOpenNI.h"
-
-
+#endif
 
 class testApp : public ofSimpleApp{
 	
@@ -51,13 +53,13 @@ public:
 
 	int cheatmode;
 	int ontop;
-
-//FRED's Below
 	
+#ifdef KINECT
 	ofxOpenNIContext	context;
 	ofxDepthGenerator	depth;
 	ofxImageGenerator	rgb;
 	ofxUserGenerator	user;
+#endif
 	
     int handHistoryDepth;
     vector<ofPoint> leftHandHistory;
