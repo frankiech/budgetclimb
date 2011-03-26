@@ -116,6 +116,13 @@ void testApp::setup(){
     released = true;
 #endif	
 	
+	boxImage.loadImage("squirrel.jpg");
+	boxTextureData = new unsigned char [100*100*3];
+	boxTextureData = boxImage.getPixels();
+	boxTexture.loadData(boxTextureData, 100, 100, GL_RGB); //add A for transparent
+	
+	
+	
 } //end setup
 
 //--------------------------------------------------------------
@@ -277,6 +284,8 @@ void testApp::update(){
 void testApp::draw(){
 
 
+	
+
     // kinect draw
     if (debug == true) {
 #ifdef KINECT
@@ -312,8 +321,14 @@ void testApp::draw(){
         
         
         camera.place();//this MUST be inside the draw function, and actually places the camera in position
-        
+
+		
+		
         ofxLightsOn(); //turn lights on
+		
+		ofSetColor(255, 255, 255, 255);
+		boxImage.draw(-100,-100, 100,100);
+		boxTexture.draw(-100, -210, 100, 100);
         
         //draw the ground
         ofSetColor(50, 50, 50, 100);
@@ -335,8 +350,11 @@ void testApp::draw(){
         
         ofSetColor(0, 0, 0);
         
+
+		
+
         ofxLightsOff(); //turn lights off to draw text
-        
+
         
 #ifdef KINECT
         // draw skeleton

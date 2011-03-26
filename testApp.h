@@ -83,7 +83,10 @@ public:
     boolean_t debug;
     boolean_t pressed;
     boolean_t released;
-    
+	
+	ofTexture boxTexture;
+	ofImage boxImage;
+	unsigned char *boxTextureData;
 };
 
 #endif
