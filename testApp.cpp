@@ -172,6 +172,7 @@ void testApp::update(){
 		else
 		{
 			youPos.z= current.location.z -25;	
+            ontop =-1;
 		}
 	} //end this isn't cheatmode
 	
