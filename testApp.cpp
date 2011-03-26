@@ -277,7 +277,7 @@ void testApp::update(){
 void testApp::draw(){
 
 
-    // kinect draw
+    // kinect draw skeleton image
     if (debug == true) {
 #ifdef KINECT
         ofSetLineWidth(1);
@@ -309,8 +309,11 @@ void testApp::draw(){
         ofDrawBitmapString("category: " + category, 20, 50);
         ofDrawBitmapString("year: " + ofToString(year), 20, 70);
         ofDrawBitmapString("height: " + ofToString(height), 20, 90);
-        
-        
+        ofDrawBitmapString("boxIndexI: " + ofToString(boxIndexI) + "; boxIndexJ: " + ofToString(boxIndexJ), 20, 110);
+        ofDrawBitmapString("youPosZ: " + ofToString(youPos.z), 20, 130);
+        ofDrawBitmapString("youPosY: " + ofToString(youPos.y), 20, 150);
+        ofDrawBitmapString("youPosX: " + ofToString(youPos.z), 20, 170);
+                           
         camera.place();//this MUST be inside the draw function, and actually places the camera in position
         
         ofxLightsOn(); //turn lights on
@@ -369,8 +372,6 @@ void testApp::keyPressed  (int key){
     
 	if (key==119 && boxIndexJ < 26) // forward (w) 
 		boxIndexJ++;
-    else
-        boxIndexJ = 0;
 	
     if (key==115 && boxIndexJ > 0) // backward (s)
 		boxIndexJ--; 
