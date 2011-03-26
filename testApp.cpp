@@ -1,5 +1,6 @@
 #include "testApp.h"
 
+const int multiplier = 3;
 
 //--------------------------------------------------------------
 void testApp::setup(){
@@ -17,7 +18,7 @@ void testApp::setup(){
 	
 	cheatmode=-1;
 	ontop=-1;
-
+    headOffsetX = 0;
 	
 	//reflexions!!
 	ofxMaterialSpecular(120, 120, 120); //how much specular light will be reflect by the surface
@@ -66,7 +67,7 @@ void testApp::setup(){
 		for (int j=0; j< 27; j++) //years 1984-2010
 		{
 			// height = (int) ofRandom(10, 1000);
-            height = dollars[i * 27 + j] / 1000000; 
+            height = dollars[i * 27 + j] / 1000000 * multiplier; 
 			myBoxes[i][j].height = height;
 			myBoxes[i][j].location= ofxVec3f(i*boxSpacingX, -height/2, boxSpacingZ*j);
 			myBoxes[i][j].category = categories[i];
@@ -84,7 +85,7 @@ void testApp::setup(){
 
 	//myBoxes[0][0].height =1000;
 	
-	groundSize= 5000;
+	groundSize= 6000;
 	g1.x= -groundSize; g1.y=0; g1.z= -groundSize;
 	g2.x= -groundSize; g2.y=0; g2.z= groundSize;
 	g3.x= groundSize; g3.y=0; g3.z= groundSize;
@@ -116,11 +117,13 @@ void testApp::setup(){
     released = true;
 #endif	
 	
-	boxImage.loadImage("squirrel.jpg");
+    
+	/*
+    boxImage.loadImage("squirrel.jpg");
 	boxTextureData = new unsigned char [100*100*3];
 	boxTextureData = boxImage.getPixels();
 	boxTexture.loadData(boxTextureData, 100, 100, GL_RGB); //add A for transparent
-	
+	*/
 	
 	
 } //end setup
@@ -130,12 +133,12 @@ void testApp::update(){
 
 
 	//light1
-	float L1DirectionX = 1;
-	float L1DirectionY = 100;
+	float L1DirectionX = -100;
+	float L1DirectionY = 3500;
 	float L1DirectionZ = -500;
 
-	light1.directionalLight(255, 100, 100, L1DirectionX, L1DirectionY, L1DirectionZ);
-//	light2.globalAmbientLight(100, 100, 100);
+	light1.directionalLight(255, 255, 255, L1DirectionX, L1DirectionY, L1DirectionZ);
+	light2.globalAmbientLight(200, 200, 200);
 
  
     current = myBoxes[boxIndexI][boxIndexJ];
@@ -148,15 +151,16 @@ void testApp::update(){
     // don't follow user
 	if (cheatmode==1)
 	{
-		camera.lerpPosition(current.location.x, ofGetHeight() +1, current.location.z-150, 0.05); //interpolate the camera into a closer position
-		camera.lerpEye(current.location.x, ofGetHeight()+current.height/10, current.location.z, 0.05);
+		//cheatmode
 	}
 	// for following the user
 	else
 	{
-		camera.lerpPosition(current.location.x, ofGetHeight()-youPos.y+1, current.location.z-150, 0.05); //interpolate the camera into a closer position
-		camera.lerpEye(current.location.x, ofGetHeight()+current.height/10-youPos.y, current.location.z, 0.05);
-		
+		//headOffsetX = ofMap(mouseX, 0, ofGetWidth(), 50, -50);
+
+        camera.lerpPosition(current.location.x + headOffsetX, ofGetHeight()-youPos.y+1, current.location.z-150, 0.05); //interpolate the camera into a closer position
+		camera.lerpEye(current.location.x, ofGetHeight()+current.height/25-youPos.y, current.location.z, 0.05);
+        
 		//win condition for getting on top of a box
 		//confusingly less than, as we're going negative from 0...
 		if (youPos.y <=-current.height)
@@ -186,6 +190,7 @@ void testApp::update(){
     context.update();
 	user.update();
     
+
 	// find the hands
 	for (int i = 0; i < user.getTrackedUsers().size(); i++) {
 		ofxTrackedUser* tracked = user.getTrackedUser(i);
@@ -197,7 +202,10 @@ void testApp::update(){
 			break;
 		}
 	}
-	
+    
+    cout << "theHeadX: " << theHead.x << endl;
+    headOffsetX=ofMap(theHead.x, 200, 500, -50, 50);
+    
 	// add hand positions to history
 	if (leftHandHistory.size() <= handHistoryDepth) {
 		leftHandHistory.insert(leftHandHistory.begin(), leftHand);
@@ -228,7 +236,7 @@ void testApp::update(){
 	leftHandDist = leftHand.y - leftHandHistory[1].y;
 	rightHandDist = rightHand.y - rightHandHistory[1].y;
     // cout << "leftHandDist = " << leftHandDist << ", rightHandDist = " << rightHandDist  << endl;
-    
+
     
     // climbing interaction
     if (leftHandDist > 0)
@@ -318,7 +326,7 @@ void testApp::draw(){
         ofDrawBitmapString("keypressed: " + info, 20, 30);
         ofDrawBitmapString("category: " + category, 20, 50);
         ofDrawBitmapString("year: " + ofToString(year), 20, 70);
-        ofDrawBitmapString("height: " + ofToString(height), 20, 90);
+        ofDrawBitmapString("height: " + ofToString(height/multiplier) + " million", 20, 90);
         ofDrawBitmapString("boxIndexI: " + ofToString(boxIndexI) + "; boxIndexJ: " + ofToString(boxIndexJ), 20, 110);
         ofDrawBitmapString("youPosZ: " + ofToString(youPos.z), 20, 130);
         ofDrawBitmapString("youPosY: " + ofToString(youPos.y), 20, 150);
@@ -330,12 +338,10 @@ void testApp::draw(){
 		
         ofxLightsOn(); //turn lights on
 		
-		ofSetColor(255, 255, 255, 255);
-		boxImage.draw(-100,-100, 100,100);
-		boxTexture.draw(-100, -210, 100, 100);
+
         
         //draw the ground
-        ofSetColor(50, 50, 50, 100);
+        ofSetColor(10, 10, 10, 255);
         ofxQuad(g1, g2, g3, g4);
         
         //ofSetColor(255, 255, 255);

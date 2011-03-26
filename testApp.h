@@ -5,7 +5,7 @@
 #include "ofx3DUtils.h"
 #include "budgetBox.h"
 
-// #define KINECT
+//#define KINECT
 
 #ifdef KINECT
 #include "ofxOpenNI.h"
@@ -54,6 +54,8 @@ public:
 	int cheatmode;
 	int ontop;
 	
+    int headOffsetX; // for head tracking
+    
 #ifdef KINECT
 	ofxOpenNIContext	context;
 	ofxDepthGenerator	depth;
