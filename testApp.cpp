@@ -12,7 +12,7 @@ void testApp::setup(){
 	centerY = ofGetHeight()/2;
 	centerZ = 0;
 
-	boxIndexI = 8;
+	boxIndexI = 7;
 	boxIndexJ = 0;
 	bSmoothLight = true;
 	
