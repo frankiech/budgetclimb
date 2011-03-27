@@ -171,7 +171,7 @@ void testApp::update(){
 
         
         if (ontop == 1)
-        camera.lerpPosition(current.location.x + headOffsetX, ofGetHeight()-youPos.y*1.2+5, current.location.z-150, 0.05); //interpolate the camera into a closer position
+            camera.lerpPosition(current.location.x + headOffsetX, ofGetHeight()-youPos.y*1.2+5, current.location.z-150, 0.05); //interpolate the camera into a closer position
         else
             camera.lerpPosition(current.location.x + headOffsetX, ofGetHeight()-youPos.y*1.2+5, current.location.z-150, 0.05);
             
@@ -441,9 +441,10 @@ void testApp::draw(){
 		if (abs(youPos.y) < 10*multiplier)
 			curHeightString = "";
         if (ontop == 1)
-            curHeightString = "$" + ofToString((int) abs(youPos.y/multiplier)) + ",000,000";
+            verdana.drawString(curHeightString, -youPos.x-verdana.stringWidth(curHeightString)/2, youPos.y-65);
+        else
+            verdana.drawString(curHeightString, -youPos.x-verdana.stringWidth(curHeightString)/2, youPos.y-20);
 
-        verdana.drawString(curHeightString, -youPos.x-verdana.stringWidth(curHeightString)/2, youPos.y-65);
 		
 //		verdana.drawString(curHeightString, -youPos.x-verdana.stringWidth(curHeightString)/2, youPos.y-20);
 //		string yearString = ofToString(year);
