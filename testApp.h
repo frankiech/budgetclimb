@@ -5,7 +5,7 @@
 #include "ofx3DUtils.h"
 #include "budgetBox.h"
 
-//#define KINECT
+#define KINECT
 
 #ifdef KINECT
 #include "ofxOpenNI.h"
@@ -44,6 +44,8 @@ public:
     
 	float groundSize;
 	ofxVec3f g1, g2, g3, g4;
+	ofxVec3f s1, s2, s3, s4;
+
 	string info;
     string category;
     int year;
@@ -86,9 +88,9 @@ public:
     boolean_t pressed;
     boolean_t released;
 	
-	ofTexture boxTexture;
-	ofImage boxImage;
-	unsigned char *boxTextureData;
+	//ofTexture boxTexture;
+	ofImage hat;
+	//unsigned char *boxTextureData;
 };
 
 #endif

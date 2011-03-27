@@ -4,7 +4,7 @@ const int multiplier = 3;
 
 //--------------------------------------------------------------
 void testApp::setup(){
-	ofBackground(250,250,250);
+	//ofBackground(250,250,250);
 	ofSetVerticalSync(true);
 	// glEnable(GL_DEPTH_TEST); //lights look weird if depth test is not enabled
 	//but  this also prevents nice transperency 
@@ -83,13 +83,21 @@ void testApp::setup(){
 		}
 	}
 
-	//myBoxes[0][0].height =1000;
+
 	
-	groundSize= 6000;
+	groundSize= 8000;
 	g1.x= -groundSize; g1.y=0; g1.z= -groundSize;
 	g2.x= -groundSize; g2.y=0; g2.z= groundSize;
 	g3.x= groundSize; g3.y=0; g3.z= groundSize;
 	g4.x= groundSize; g4.y=0; g4.z= -groundSize;
+	
+	
+	s1.x= -groundSize*2; s1.y=0; s1.z= groundSize;
+	s2.x= groundSize*2; s2.y=0; s2.z= groundSize;
+	s3.x= groundSize*2; s3.y=-groundSize*2; s3.z= groundSize;
+	s4.x= -groundSize*2; s4.y=-groundSize*2; s4.z= groundSize;
+	
+	
 	
 	youPos.y= 0;
 	
@@ -286,6 +294,9 @@ void testApp::update(){
     }
 
 #endif	
+	
+	hat.loadImage("unclesam.png");
+	//hat.setImageType(OF_IMAGE_COLORALPHA);
 
 }
 
@@ -341,9 +352,15 @@ void testApp::draw(){
 
         
         //draw the ground
-        ofSetColor(10, 10, 10, 255);
+        ofSetColor(10, 10, 10);
         ofxQuad(g1, g2, g3, g4);
+		
+		//draw the sky
+		ofSetColor(100, 100, 200, 50);
+		//ofxQuad(s1, s2, s3, s4);
         
+		ofxSphere(centerX, centerY, 0, 4000);
+		
         //ofSetColor(255, 255, 255);
         
         // draw budgetBoxes
@@ -371,8 +388,10 @@ void testApp::draw(){
         ofPushMatrix();
             ofTranslate(youPos.x-25 , youPos.y, youPos.z+20);
             ofScale(.08, .08, .08);
-            ofSetColor(0, 0, 255);
             user.draw();
+		ofSetColor(255, 255, 255);
+		ofxSphere(0, 0, 0, 200);
+			hat.draw(0, 0);
             //ofxSphere(leftHand.x/10, leftHand.y/10, 0,30);
             //ofxSphere(rightHand.x/10, rightHand.y/10, 0,30);
             //ofxSphere(theHead.x/10, theHead.y/10, 0, 30);
@@ -380,6 +399,9 @@ void testApp::draw(){
 #else        
         // draw sphere
         ofxSphere(youPos.x, youPos.y, youPos.z, 10);
+		ofSetColor(255, 255, 255);
+
+		hat.draw(youPos.x-30, youPos.y-50, 50, 50);
 #endif
 	
     }
