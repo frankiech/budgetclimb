@@ -19,3 +19,5 @@ ofLine is an conflict - comment it out.
 Made some changes to OpenNI stuff.
 
 Take the unclesam.png and put it in your bin/data folder.
+
+Added verdana.ttf file to src
