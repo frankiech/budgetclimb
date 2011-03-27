@@ -12,7 +12,7 @@ void testApp::setup(){
 	centerY = ofGetHeight()/2;
 	centerZ = 0;
 
-	boxIndexI = 0;
+	boxIndexI = 8;
 	boxIndexJ = 0;
 	bSmoothLight = true;
 	
@@ -132,6 +132,9 @@ void testApp::setup(){
 	boxTextureData = boxImage.getPixels();
 	boxTexture.loadData(boxTextureData, 100, 100, GL_RGB); //add A for transparent
 	*/
+	
+	verdana.loadFont("verdana.ttf",8, false, true);
+	verdana.setLineHeight(20.0f);
 	
 	
 } //end setup
@@ -345,15 +348,16 @@ void testApp::draw(){
     }  
     
     else {
-        ofSetColor(0, 0, 0);
-        ofDrawBitmapString("keypressed: " + info, 20, 30);
-        ofDrawBitmapString("category: " + category, 20, 50);
-        ofDrawBitmapString("year: " + ofToString(year), 20, 70);
-        ofDrawBitmapString("height: " + ofToString(height/multiplier) + " million", 20, 90);
-        ofDrawBitmapString("boxIndexI: " + ofToString(boxIndexI) + "; boxIndexJ: " + ofToString(boxIndexJ), 20, 110);
-        ofDrawBitmapString("youPosZ: " + ofToString(youPos.z), 20, 130);
-        ofDrawBitmapString("youPosY: " + ofToString(youPos.y), 20, 150);
-        ofDrawBitmapString("youPosX: " + ofToString(youPos.z), 20, 170);
+        ofSetColor(255, 0, 0);
+//        ofDrawBitmapString("keypressed: " + info, 20, 30);
+//		ofCircle(current.location.x, current.location.y-20, current.location.z-300);
+//        ofDrawBitmapString("category: " + category, youPos.x, youPos.y);
+//        ofDrawBitmapString("year: " + ofToString(year), 20, 50);
+//        ofDrawBitmapString("height: " + ofToString(height/multiplier) + " million", 20, 70);
+//        ofDrawBitmapString("boxIndexI: " + ofToString(boxIndexI) + "; boxIndexJ: " + ofToString(boxIndexJ), 20, 110);
+//        ofDrawBitmapString("youPosZ: " + ofToString(youPos.z), 20, 130);
+//        ofDrawBitmapString("youPosY: " + ofToString(youPos.y), 20, 150);
+//        ofDrawBitmapString("youPosX: " + ofToString(youPos.z), 20, 170);
                            
         camera.place();//this MUST be inside the draw function, and actually places the camera in position
 
@@ -427,8 +431,39 @@ void testApp::draw(){
 #endif
 	
     }
-    
+	
+	
+	ofPushMatrix();
+		ofTranslate(0,0,youPos.z);
+		ofSetColor(255,255,255);
+		ofRotateY(180);
+		string curHeightString = "$" + ofToString((int) abs(youPos.y/multiplier)) + ",000,000";
+		if (abs(youPos.y) < 10*multiplier)
+			curHeightString = "";
+		
+//		verdana.drawString(curHeightString, -youPos.x-verdana.stringWidth(curHeightString)/2, youPos.y-20);
+//		string yearString = ofToString(year);
+//		string heightString = ofToString(height/multiplier)  + " million";
+//		verdana.drawString(yearString, -youPos.x-verdana.stringWidth(yearString)/2, youPos.y);
+//		verdana.drawString(category, -youPos.x-verdana.stringWidth(category)/2, youPos.y+10);
+//		verdana.drawString(heightString, -youPos.x-verdana.stringWidth(heightString)/2, youPos.y+20);
+	ofPopMatrix();
 
+	ofPushMatrix();
+		ofTranslate(0,0,youPos.z);
+		ofRotateY(180);
+		verdana.drawString(curHeightString, -youPos.x-verdana.stringWidth(curHeightString)/2, youPos.y-20);
+		string yearString = ofToString(year);
+		string heightString = "$" + ofToString(height/multiplier)  + " million";
+		verdana.drawString(heightString, -youPos.x-verdana.stringWidth(heightString)/2, -40);
+		verdana.drawString(yearString, -youPos.x-verdana.stringWidth(yearString)/2, -30);
+		if (category == "Education, Training, Employment, and Social Services") {
+				verdana.drawString("Education, Training, Employment", -youPos.x-verdana.stringWidth("Education, Training, Employment")/2, -20);
+				verdana.drawString(" and Social Services", -youPos.x-verdana.stringWidth(" and Social Services")/2, -10);
+		}
+		else 
+			verdana.drawString(category, -youPos.x-verdana.stringWidth(category)/2, -20);
+	ofPopMatrix();
 
 }
 

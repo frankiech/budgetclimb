@@ -91,6 +91,12 @@ public:
 	//ofTexture boxTexture;
 	ofImage hat;
 	//unsigned char *boxTextureData;
+	ofTexture boxTexture;
+	ofImage boxImage;
+	unsigned char *boxTextureData;
+	
+	ofTrueTypeFont  verdana;
+	
 };
 
 #endif
