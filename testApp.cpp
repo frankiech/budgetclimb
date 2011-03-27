@@ -206,7 +206,7 @@ void testApp::update(){
 #ifdef KINECT
     context.update();
 	user.update();
-    bool nouserfound = true;
+    nouserfound = true;
 
 	// find the hands
 	for (int i = 0; i < user.getTrackedUsers().size(); i++) {
@@ -402,25 +402,25 @@ void testApp::draw(){
 #ifdef KINECT
         // draw skeleton
         ofPushMatrix();
-			if (ontop)
+			if (ontop==1)
 				ofTranslate(youPos.x-25 , youPos.y-45, youPos.z+20);
-			else
+			if (ontop==-1)
 				ofTranslate(youPos.x-25 , youPos.y, youPos.z+20);
-		
-		
-            ofScale(.08, .08, .08);
-            user.draw();
-		ofSetColor(255, 255, 255);
-		
-		
-		ofxSphere(theHead.x, 30, 0, 100);
-		
-		ofSetRectMode(OF_RECTMODE_CENTER);
-		hat.draw(theHead.x, -150);
-        
-		//ofxSphere(leftHand.x/10, leftHand.y/10, 0,30);
-            //ofxSphere(rightHand.x/10, rightHand.y/10, 0,30);
-            //ofxSphere(theHead.x/10, theHead.y/10, 0, 30);
+					
+        ofScale(.08, .08, .08);
+		if (!nouserfound)
+		{	user.draw();
+			ofSetColor(255, 255, 255);
+			
+			ofxSphere(theHead.x, 30, 0, 100);
+			
+			ofSetRectMode(OF_RECTMODE_CENTER);
+			hat.draw(theHead.x, -150);
+			
+			//ofxSphere(leftHand.x/10, leftHand.y/10, 0,30);
+				//ofxSphere(rightHand.x/10, rightHand.y/10, 0,30);
+				//ofxSphere(theHead.x/10, theHead.y/10, 0, 30);
+		}
         ofPopMatrix();
 #else        
         // draw sphere

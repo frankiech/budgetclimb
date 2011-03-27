@@ -97,6 +97,8 @@ public:
 	
 	ofTrueTypeFont  verdana;
 	
+	bool nouserfound;
+	
 };
 
 #endif
