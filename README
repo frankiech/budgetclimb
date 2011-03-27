@@ -13,3 +13,5 @@ Addons required:
 Don't forget to put the openNI bin files in your bin/data folder for this project.
 
 Also you might call the parent folder 'src'.
+
+ofLine is an conflict - comment it out.
