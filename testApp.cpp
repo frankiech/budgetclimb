@@ -412,10 +412,10 @@ void testApp::draw(){
 		{	user.draw();
 			ofSetColor(255, 255, 255);
 			
-			ofxSphere(theHead.x, 30, 0, 100);
+			ofxSphere(theHead.x, 130, 0, 100);
 			
 			ofSetRectMode(OF_RECTMODE_CENTER);
-			hat.draw(theHead.x, -150);
+			hat.draw(theHead.x, -40);
 			
 			//ofxSphere(leftHand.x/10, leftHand.y/10, 0,30);
 				//ofxSphere(rightHand.x/10, rightHand.y/10, 0,30);
