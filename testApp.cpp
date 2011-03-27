@@ -398,13 +398,23 @@ void testApp::draw(){
 #ifdef KINECT
         // draw skeleton
         ofPushMatrix();
-            ofTranslate(youPos.x-25 , youPos.y, youPos.z+20);
+			if (ontop)
+				ofTranslate(youPos.x-25 , youPos.y-45, youPos.z+20);
+			else
+				ofTranslate(youPos.x-25 , youPos.y, youPos.z+20);
+		
+		
             ofScale(.08, .08, .08);
             user.draw();
 		ofSetColor(255, 255, 255);
-		ofxSphere(0, 0, 0, 200);
-			hat.draw(0, 0);
-            //ofxSphere(leftHand.x/10, leftHand.y/10, 0,30);
+		
+		
+		ofxSphere(theHead.x, 30, 0, 100);
+		
+		ofSetRectMode(OF_RECTMODE_CENTER);
+		hat.draw(theHead.x, -150);
+        
+		//ofxSphere(leftHand.x/10, leftHand.y/10, 0,30);
             //ofxSphere(rightHand.x/10, rightHand.y/10, 0,30);
             //ofxSphere(theHead.x/10, theHead.y/10, 0, 30);
         ofPopMatrix();
