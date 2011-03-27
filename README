@@ -15,3 +15,5 @@ Don't forget to put the openNI bin files in your bin/data folder for this projec
 Also you might call the parent folder 'src'.
 
 ofLine is an conflict - comment it out.
+
+Made some changes to OpenNI stuff.
