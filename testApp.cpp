@@ -440,6 +440,10 @@ void testApp::draw(){
 		string curHeightString = "$" + ofToString((int) abs(youPos.y/multiplier)) + ",000,000";
 		if (abs(youPos.y) < 10*multiplier)
 			curHeightString = "";
+        if (ontop == 1)
+            curHeightString = "$" + ofToString((int) abs(youPos.y/multiplier)) + ",000,000";
+
+        verdana.drawString(curHeightString, -youPos.x-verdana.stringWidth(curHeightString)/2, youPos.y-65);
 		
 //		verdana.drawString(curHeightString, -youPos.x-verdana.stringWidth(curHeightString)/2, youPos.y-20);
 //		string yearString = ofToString(year);
@@ -451,8 +455,7 @@ void testApp::draw(){
 
 	ofPushMatrix();
 		ofTranslate(0,0,youPos.z);
-		ofRotateY(180);
-		verdana.drawString(curHeightString, -youPos.x-verdana.stringWidth(curHeightString)/2, youPos.y-20);
+        ofRotateY(180);
 		string yearString = ofToString(year);
 		string heightString = "$" + ofToString(height/multiplier)  + " million";
 		verdana.drawString(heightString, -youPos.x-verdana.stringWidth(heightString)/2, -40);
