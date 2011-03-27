@@ -89,6 +89,9 @@ public:
 	ofTexture boxTexture;
 	ofImage boxImage;
 	unsigned char *boxTextureData;
+	
+	ofTrueTypeFont  verdana;
+	
 };
 
 #endif
