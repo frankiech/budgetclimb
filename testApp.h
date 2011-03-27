@@ -6,7 +6,7 @@
 #include "budgetBox.h"
 
 
-//#define KINECT
+#define KINECT
 
 
 #ifdef KINECT

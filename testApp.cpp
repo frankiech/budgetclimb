@@ -318,6 +318,7 @@ void testApp::update(){
 //--------------------------------------------------------------
 void testApp::draw(){
 
+	ofBackground(200,200,250);
 
 	
 
@@ -375,7 +376,7 @@ void testApp::draw(){
 		ofSetColor(100, 100, 200, 50);
 		//ofxQuad(s1, s2, s3, s4);
         
-		ofxSphere(centerX, centerY, 0, 4000);
+		//ofxSphere(centerX, centerY, 0, 10000);
 		
         //ofSetColor(255, 255, 255);
         
