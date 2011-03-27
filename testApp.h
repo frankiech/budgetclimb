@@ -5,7 +5,9 @@
 #include "ofx3DUtils.h"
 #include "budgetBox.h"
 
+
 //#define KINECT
+
 
 #ifdef KINECT
 #include "ofxOpenNI.h"
