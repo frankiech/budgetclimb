@@ -161,8 +161,14 @@ void testApp::update(){
 	{
 		//headOffsetX = ofMap(mouseX, 0, ofGetWidth(), 50, -50);
 
-        camera.lerpPosition(current.location.x + headOffsetX, ofGetHeight()-youPos.y+1, current.location.z-150, 0.05); //interpolate the camera into a closer position
-		camera.lerpEye(current.location.x, ofGetHeight()+current.height/25-youPos.y, current.location.z, 0.05);
+        
+        if (ontop == 1)
+        camera.lerpPosition(current.location.x + headOffsetX, ofGetHeight()-youPos.y*1.2+5, current.location.z-150, 0.05); //interpolate the camera into a closer position
+        else
+            camera.lerpPosition(current.location.x + headOffsetX, ofGetHeight()-youPos.y*1.2+5, current.location.z-150, 0.05);
+            
+        camera.lerpEye(current.location.x, ofGetHeight()+current.height/25-youPos.y, current.location.z, 0.05);
+
         
 		//win condition for getting on top of a box
 		//confusingly less than, as we're going negative from 0...
@@ -192,7 +198,7 @@ void testApp::update(){
 #ifdef KINECT
     context.update();
 	user.update();
-    
+    bool nouserfound = true;
 
 	// find the hands
 	for (int i = 0; i < user.getTrackedUsers().size(); i++) {
@@ -202,12 +208,18 @@ void testApp::update(){
 			rightHand = tracked->right_lower_arm.end;
 			theHead = tracked->neck.begin;
 			theThroat = tracked->neck.end;
+            nouserfound = false;
 			break;
 		}
 	}
     
-    cout << "theHeadX: " << theHead.x << endl;
-    headOffsetX=ofMap(theHead.x, 200, 500, -50, 50);
+    if (nouserfound)
+        headOffsetX=0;
+    else if(ontop == 1) 
+        headOffsetX=ofMap(theHead.x, 250, 450, -200, 200);
+    else
+        headOffsetX=ofMap(theHead.x, 250, 450, -180, 180);
+    // cout << "theHeadX: " << theHead.x << endl;
     
 	// add hand positions to history
 	if (leftHandHistory.size() <= handHistoryDepth) {
