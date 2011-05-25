@@ -217,7 +217,7 @@ void testApp::update(){
 			theHead = tracked->neck.begin;
 			theThroat = tracked->neck.end;
             nouserfound = false;
-			break;
+			//break;
 		}
 	}
     
@@ -328,14 +328,15 @@ void testApp::draw(){
         ofSetLineWidth(1);
         ofSetColor(255, 255, 255);
         
-        // rgb.draw(0, 0, miniWidth, miniHeight);
+        ofSetRectMode(OF_RECTMODE_CORNER);
+        rgb.draw(0, 0, miniWidth, miniHeight);
         
         
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_DST_COLOR, GL_ZERO);
+        //glEnable(GL_BLEND);
+        //glBlendFunc(GL_DST_COLOR, GL_ZERO);
         
         // user.drawUserMasks(0, 0);
-        glDisable(GL_BLEND);
+        //eeglDisable(GL_BLEND);
         user.draw();
         
         ofSetColor(255, 0, 0, 255);
@@ -347,7 +348,6 @@ void testApp::draw(){
         
 #endif  
     }  
-    
     else {
         ofSetColor(255, 0, 0);
 //        ofDrawBitmapString("keypressed: " + info, 20, 30);
@@ -498,6 +498,10 @@ void testApp::keyPressed  (int key){
     
     if (key==101) // toggle debug (e)
         debug = !debug;
+    
+    if (key==114) // toggle restart (r)
+        // setup(); 
+        user.restart();
     
     if (key==106 && ontop == 1) {// toggle jump (j)
         boxIndexJ++; // move forward
